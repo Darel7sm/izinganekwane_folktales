@@ -1,9 +1,10 @@
 export interface Posts {
   _id: string
-  firstTitle: string
-  secondTitle: string
+  userId: string
+  title: string
   author: string
-  text: string
+  authorId: string
+  content: string
   createdAt: string
   updatedAt: string
 }

@@ -1,9 +1,11 @@
-// src/pages/ForgotPassword.tsx
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
+
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -20,8 +22,10 @@ const ForgotPassword: React.FC = () => {
       body: JSON.stringify({ email })
       
     })
+
     const data = await response.json()
     console.log(data)
+      navigate('/Reset-Password/12345')
 
     } catch (error) {
       setMessage('Error sending reset link')
@@ -43,15 +47,19 @@ const ForgotPassword: React.FC = () => {
             <input
               type="email"
               id="email"
+              required
               className="w-full px-3 py-2 border rounded"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+          {message && (
+            <p className="mt-4 text-center text-red-500">{message}</p>
+          )}
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              className="bg-slate-950 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
               Submit
             </button>
           </div>

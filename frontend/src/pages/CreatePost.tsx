@@ -3,13 +3,11 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-// import { convert } from 'html-to-text'
 
 const CreatePost = () => {
-  const [firstTitle, setFirstTitle] = useState('')
-  const [secondTitle, setSecondTitle] = useState('')
+  const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
-  const [text, setText] = useState('')
+  const [content, setContent] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const navigate = useNavigate()
 
@@ -35,14 +33,11 @@ const CreatePost = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // const plainText = convert(text, {
-    //   wordwrap: 130,
-    // })
 
     try {
       await axios.post(
         'http://localhost:5400/api/posts/',
-        { firstTitle, secondTitle, author, text },
+        { title, author, content },
         { withCredentials: true }
       )
       navigate('/My-Posts')
@@ -52,26 +47,18 @@ const CreatePost = () => {
   }
 
   if (!isLoggedIn) {
-    return null // Render nothing if not logged in
+    return null 
   }
 
   return (
-    <div className="container mx-auto grid place-content-center">
+    <div className="container mx-auto grid place-content-center max-sm:p-5">
       <h2 className="text-center text-3xl font-bold py-10">Create Post</h2>
       <form onSubmit={handleSubmit} className="grid gap-4">
         <input
           type="text"
-          placeholder="First Title"
-          value={firstTitle}
-          onChange={(e) => setFirstTitle(e.target.value)}
-          required
-          className="border p-2"
-        />
-        <input
-          type="text"
-          placeholder="Second Title"
-          value={secondTitle}
-          onChange={(e) => setSecondTitle(e.target.value)}
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           required
           className="border p-2"
         />
@@ -85,11 +72,12 @@ const CreatePost = () => {
         />
         <ReactQuill
           theme="snow"
-          ref='quill-editor' 
-          value={text}
-          onChange={setText}
+          value={content}
+          onChange={setContent}
           placeholder="Write your text here"
+          className="max-w-2xl"
         />
+
         <div className="grid place-content-center">
           <button
             type="submit"

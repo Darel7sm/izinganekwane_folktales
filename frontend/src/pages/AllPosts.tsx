@@ -15,6 +15,11 @@ const AllPosts = () => {
           headers: { 'Content-Type': 'application/json' },
         })
         const post = await response.json()
+        post.sort((a: Posts, b: Posts) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+        })
         setPosts(post)
       } catch (error) {
         console.error(error)
@@ -31,7 +36,7 @@ const AllPosts = () => {
 
   return (
     <div className="px-5">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
         {currentPosts.map((post) => (
           <div
             className="border p-4 mt-5 hover:transition hover:ease-in-out hover:transform hover:skew-y-1 hover:bg-slate-50"

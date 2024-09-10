@@ -1,22 +1,37 @@
-import React, { SyntheticEvent, useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
-import AuthContext from '../context/AuthContext'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const SignIn: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+  })
+  const [error, setError] = useState<string | null>(null) 
+  const navigate = useNavigate()
+  const { login } = useAuth()
 
-  const { login } = useContext(AuthContext)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setData({
+      ...data,
+      [e.target.name]: value,
+    })
+  }
 
-  const handleSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
-      await login(email, password)
-      window.location.href = '/'
-      console.log('Signed-In Successful')
+      const loginInfo = await login(data.email, data.password)
+        
+      console.log(loginInfo)
+
+      navigate('/')
+      window.location.reload()
     } catch (error) {
-      console.error(error)
+      const errorMessage = (error as Error).message
+      setError(errorMessage)
     }
   }
 
@@ -25,17 +40,21 @@ const SignIn: React.FC = () => {
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
         <form onSubmit={handleSubmit}>
+          {error && (
+            <p className="mb-4 text-red-600">{error}</p> 
+          )}
           <div className="mb-4 text-slate-950">
             <label className="block text-sm font-bold mb-2" htmlFor="email">
               Email
             </label>
             <input
               type="email"
+              name="email"
               id="email"
               className="w-full px-3 py-2 border rounded"
-              placeholder='Email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              value={data.email}
+              onChange={handleChange}
             />
           </div>
           <div className="mb-6">
@@ -44,11 +63,12 @@ const SignIn: React.FC = () => {
             </label>
             <input
               type="password"
+              name="password"
               id="password"
               className="w-full px-3 py-2 border rounded"
-              placeholder='Password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              value={data.password}
+              onChange={handleChange}
             />
           </div>
           <p className="mb-5 text-red-600 hover:text-slate-300">

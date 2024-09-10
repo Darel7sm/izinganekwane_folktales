@@ -23,26 +23,23 @@ const signUp: RequestHandler<unknown, unknown, userInfo, unknown> = async (
       res.status(400).json({ fieldRequiredError: 'All field are required' })
     }
 
-    // Name validation
-    if (name.length < 5) {
+    if (name.trim().length < 5) {
       return res
         .status(400)
         .json({ nameError: 'Name must be 5 characters or more' })
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return res.status(400).json({ emailError: 'Invalid email format' })
     }
 
-    // Password validation
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     if (!passwordRegex.test(pwd)) {
       return res.status(400).json({
         passwordError:
-          'Password must be 8 characters long or more, with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
+          'Your password must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
       })
     }
 
@@ -61,6 +58,7 @@ const signUp: RequestHandler<unknown, unknown, userInfo, unknown> = async (
     })
 
     res.status(201).json({ newUser, message: 'User created successfully' })
+
   } catch (error) {
     next()
   }
@@ -101,22 +99,22 @@ const signIn: RequestHandler<unknown, unknown, userInfo, unknown> = async (
     // Generate a token
     const token = jwt.sign(
       { userId: findUser._id, email: findUser.email },
-      process.env.JWT_SECRET ||
-        'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyMDE2ODY1NiwiaWF0IjoxNzIwMTY4NjU2fQ.iUgOkAQ0eQWFgStv-tuxz-GgvPI0rX5vxts9ucgMaW8',
+      process.env.JWT_SECRET as string,
       { expiresIn: '1h' }
     )
 
     // Set the token as an HTTP-only cookie
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set secure flag in production
+      secure: process.env.NODE_ENV === 'production', 
       sameSite: 'strict',
     })
 
     res.status(200).json({ message: 'Sign-In Successful', token })
+
   } catch (error) {
     next(error)
-  }
+  } 
 }
 
 const getUser: RequestHandler = async (req, res, next) => {
@@ -130,17 +128,15 @@ const getUser: RequestHandler = async (req, res, next) => {
     }
 
     res.status(200).json(user)
+
   } catch (error) {
     next(error)
   }
 }
 
-interface updateUserType {
-  userId: string
-}
 
 const updateUserDetails: RequestHandler<
-  updateUserType,
+  { userId: string },
   unknown,
   userInfo,
   unknown
@@ -149,26 +145,24 @@ const updateUserDetails: RequestHandler<
   const { name, email, password } = req.body
 
   try {
-    // Name validation
+
     if (name && name.length < 5) {
       return res
         .status(400)
         .json({ nameError: 'Name must be 5 characters or more' })
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (email && !emailRegex.test(email)) {
       return res.status(400).json({ emailError: 'Invalid email format' })
     }
 
-    // Password validation
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     if (password && !passwordRegex.test(password)) {
       return res.status(400).json({
         passwordError:
-          'Password must be 8 characters long or more, with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
+          'Your password must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
       })
     }
 
@@ -188,6 +182,13 @@ const updateUserDetails: RequestHandler<
       updatedUser,
       updatedUserSuccess: 'Updated successfully',
     })
+
+    if (!updatedUser) {
+      return res
+        .status(404)
+        .json({ updatingUserError: 'There was an error updating user details' })
+    }
+
   } catch (error) {
     next(error)
   }
@@ -202,9 +203,7 @@ const forgotPassword: RequestHandler = async (req, res, next) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    const secret =
-      'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyMDE2ODY1NiwiaWF0IjoxNzIwMTY4NjU2fQ.iUgOkAQ0eQWFgStv-tuxz-GgvPI0rX5vxts9ucgMaW8' +
-      oldUser.password
+    const secret = process.env.JWT_SECRET + oldUser.password
     const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
       expiresIn: '1hr',
     })
@@ -226,8 +225,7 @@ const resetPassword: RequestHandler = async (req, res, next) => {
     return res.status(404).json({ message: 'User not found' })
   }
 
-  const secret =
-    'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyMDE2ODY1NiwiaWF0IjoxNzIwMTY4NjU2fQ.iUgOkAQ0eQWFgStv-tuxz-GgvPI0rX5vxts9ucgMaW8' +
+  const secret = process.env.JWT_SECRET +
     oldUser.password
   try {
     const tokenIsValid = jwt.verify(token, secret)
@@ -235,8 +233,6 @@ const resetPassword: RequestHandler = async (req, res, next) => {
     if (!tokenIsValid) {
       return res.status(400).json({ message: 'Not Verified' })
     }
-
-    // res.render('index', { email: tokenIsValid.email })
 
     res.status(200).json({ message: 'Verified' })
   } catch (error) {
@@ -254,6 +250,7 @@ const deleteUser: RequestHandler = async (req, res, next) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
+    res.clearCookie('token')
     res.status(200).json({ message: 'User deleted successfully' })
   } catch (error) {
     next(error)

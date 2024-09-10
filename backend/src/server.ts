@@ -7,11 +7,13 @@ import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import userRoutes from './routes/userRoutes'
 import postRoutes from './routes/postRoutes'
+import commentRoutes from './routes/commentRoutes'
+import reactionRoutes from './routes/reactionRoutes'
 
 dotenv.config()
 
 const app = express()
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5400
 const mongoUrl = process.env.MONGO_URI
 
 
@@ -20,7 +22,8 @@ app.use(express.json())
 app.use(morgan('dev'))
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   })
 )
@@ -30,6 +33,8 @@ app.use(bodyParser.json())
 // Routes
 app.use('/api/posts', postRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/posts/comment', commentRoutes)
+app.use('/api/posts/reaction', reactionRoutes)
 
 // Connect to MongoDB and start server
 mongoose

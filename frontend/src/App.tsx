@@ -12,7 +12,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import EditPost from './pages/EditPost'
 import Post from './pages/Post'
-import Footer from './pages/Footer'
+import Footer from './components/Footer'
 
 function App() {
   return (

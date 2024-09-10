@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import PostModel from '../models/post'
+import UserModel from '../models/User'
 
 const getPosts: RequestHandler = async (req, res, next) => {
   try {
@@ -32,16 +33,19 @@ const getPost: RequestHandler = async (req, res, next) => {
 }
 
 
-const getPostByAuthor: RequestHandler = async (req, res, next) => {
-  const author = req.params.author
+const getPostByUser: RequestHandler = async (req, res, next) => {
+  const userId = req.user?.userId 
 
   try {
-    const posts = await PostModel.find({ author }).exec()
-
+    const user = await UserModel.findById(userId).exec() 
+    if (!user) {
+      return res.status(404).json({ userError: 'User not found' })
+    }
+    const posts = await PostModel.find({ authorId: userId }).exec() 
     if (!posts || posts.length === 0) {
       return res
         .status(404)
-        .json({ gettingPostsError: 'No posts found for this author' })
+        .json({ postsError: 'No posts created by this user' })
     }
 
     res.status(200).json(posts)
@@ -51,12 +55,10 @@ const getPostByAuthor: RequestHandler = async (req, res, next) => {
 }
 
 
-
 interface PostTypes {
-  firstTitle: string
-  secondTitle: string
+  title: string
   author: string
-  text: string
+  content: string
 }
 
 const createPost: RequestHandler<unknown, unknown, PostTypes, unknown> = async (
@@ -64,15 +66,17 @@ const createPost: RequestHandler<unknown, unknown, PostTypes, unknown> = async (
   res,
   next
 ) => {
-  const { firstTitle, secondTitle, author, text } = req.body
+  const { title, author, content } = req.body
+  const userId = req.user?.userId 
 
   try {
     const newPost = await PostModel.create({
-      firstTitle,
-      secondTitle,
-      author,
-      text,
+      authorId: userId, 
+      author, 
+      title,
+      content,
     })
+
     if (!newPost) {
       return res
         .status(400)
@@ -88,18 +92,16 @@ const createPost: RequestHandler<unknown, unknown, PostTypes, unknown> = async (
 }
 
 
-interface updatePostType {
-  postId: string
-}
 
 const updatePost: RequestHandler<
-  updatePostType,
+  { postId: string },
   unknown,
   PostTypes,
   unknown
 > = async (req, res, next) => {
   const postId = req.params.postId
-  const { firstTitle, secondTitle, author, text } = req.body
+  const { title, author, content } = req.body
+  const userId = req.user?.userId.toString().trim() 
 
   try {
     const post = await PostModel.findById(postId).exec()
@@ -108,31 +110,34 @@ const updatePost: RequestHandler<
       return res.status(404).json({ findingPostError: 'Post not found' })
     }
 
-    if (!firstTitle) {
-      return res
-        .status(400)
-        .json({ firstTiteError: 'The title name is required' })
-    }
-    if (!secondTitle) {
-      return res
-        .status(400)
-        .json({ secondTiteError: 'The title name is required' })
-    }
-    if (!author) {
-      return res
-        .status(400)
-        .json({ authorError: 'The author name is required' })
-    }
-    if (!text) {
-      return res.status(400).json({ textError: 'The content is required' })
+    if (post.authorId.toString().trim() !== userId) {
+      return res.status(403).json({
+        authorizationError: 'You are not authorized to update this post',
+      })
     }
 
-    post.firstTitle = firstTitle
-    post.secondTitle = secondTitle
-    post.author = author
-    post.text = text
+    if (title.length === 0 || author.length === 0 || content.length === 0) {
+      return res.status(400).json({ emptyError: 'Field must not be empty' })
+    }
+
+    const existingPost = await PostModel.findOne({
+      title,
+      _id: { $ne: postId },
+    }).exec()
+
+    if (existingPost) {
+      return res
+        .status(400)
+        .json({ duplicateTitleError: 'A post with this title already exists' })
+    }
+
+    // Update post fields
+    if (title) post.title = title
+    if (author) post.author = author 
+    if (content) post.content = content
 
     const updatedPost = await post.save()
+
     if (!updatedPost) {
       return res
         .status(404)
@@ -147,14 +152,23 @@ const updatePost: RequestHandler<
   }
 }
 
+
 const deletePost: RequestHandler = async (req, res, next) => {
   const postId = req.params.postId
+  const userId = req.user?.userId.toString().trim() 
 
   try {
     const post = await PostModel.findById(postId).exec()
 
     if (!post) {
       return res.status(404).json({ findingDeletedPostError: 'Post not found' })
+    }
+
+
+    if (post.authorId.toString().trim() !== userId) {
+      return res.status(403).json({
+        authorizationError: 'You are not authorized to delete this post',
+      })
     }
 
     await PostModel.findByIdAndDelete(postId)
@@ -164,4 +178,5 @@ const deletePost: RequestHandler = async (req, res, next) => {
   }
 }
 
-export { getPosts, getPost, getPostByAuthor, createPost, updatePost, deletePost }
+
+export { getPosts, getPost, getPostByUser, createPost, updatePost, deletePost }

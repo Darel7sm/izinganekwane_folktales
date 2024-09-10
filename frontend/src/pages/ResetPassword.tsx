@@ -1,4 +1,3 @@
-// src/pages/ResetPassword.tsx
 import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -67,15 +66,19 @@ const ResetPassword: React.FC = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
+
+          {message && (
+            <p className="mt-4 text-center text-red-500">{message}</p>
+          )}
+
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              className="bg-slate-950 hover:bg-slate-500 text-white font-bold py-2 px-4 mt-8 rounded focus:outline-none focus:shadow-outline">
               Submit
             </button>
           </div>
         </form>
-        {message && <p className="mt-4 text-center text-red-500">{message}</p>}
       </div>
     </div>
   )

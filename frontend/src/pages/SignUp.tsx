@@ -1,33 +1,40 @@
-import React, { SyntheticEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const SignUp: React.FC = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { register } = useAuth()
+
+  const [data, setData] = useState({
+  name: '',
+  email: '',
+  password: '',
+})
+
+
+console.log(data)
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value
+  setData({
+    ...data,
+    [e.target.name]: value,
+  })
+}
 
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    try {
-      const response = await fetch('http://localhost:5400/api/users/sign-up', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
-    })
+    const mydata = await register(data.name, data.email, data.password);
+    console.log(mydata)
 
-    const data = await response.json()
-    console.log(data)
-    if (response.ok) {
       navigate('/Sign-In')
+      console.log(data)
       console.log('sign-up successful')
   }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
@@ -40,14 +47,12 @@ const SignUp: React.FC = () => {
             <input
               type="text"
               id="name"
+              name="name"
               className="w-full px-3 py-2 border rounded"
               placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={data.name}
+              onChange={handleChange}
             />
-            {/* {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-            )} */}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold mb-2" htmlFor="email">
@@ -56,14 +61,12 @@ const SignUp: React.FC = () => {
             <input
               type="email"
               id="email"
+              name="email"
               className="w-full px-3 py-2 border rounded"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={data.email}
+              onChange={handleChange}
             />
-            {/* {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-            )} */}
           </div>
           <div className="mb-6">
             <label className="block text-sm font-bold mb-2" htmlFor="password">
@@ -72,14 +75,12 @@ const SignUp: React.FC = () => {
             <input
               type="password"
               id="password"
+              name="password"
               className="w-full px-3 py-2 border rounded"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={data.password}
+              onChange={handleChange}
             />
-            {/* {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-            )} */}
           </div>
           <div className="flex items-center justify-between">
             <button
