@@ -11,17 +11,17 @@ const ForgotPassword: React.FC = () => {
     e.preventDefault()
     try {
       const response = await fetch(
-        'http://localhost:5400/api/users/forgot-password',
-    {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json', 
-        Accept: 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify({ email })
-      
-    })
+        'http://izinganekwane-folktales-backend.vercel.app/api/users/forgot-password',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          body: JSON.stringify({ email }),
+        }
+      )
 
     const data = await response.json()
     console.log(data)

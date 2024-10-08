@@ -10,10 +10,13 @@ const AllPosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:5400/api/posts/', {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        })
+        const response = await fetch(
+          'http://izinganekwane-folktales-backend.vercel.app/api/posts/',
+          {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
         const post = await response.json()
         post.sort((a: Posts, b: Posts) => {
           return (

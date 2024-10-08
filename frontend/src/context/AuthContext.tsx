@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const fetchUser = async () => {
       try {
         const authResponse = await axios.get(
-          'http://localhost:5400/api/users',
+          'http://izinganekwane-folktales-backend.vercel.app/api/users',
           {
             withCredentials: true,
           }
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Fetch the full user details using the GetUserById endpoint
         const fullUserResponse = await axios.get(
-          `http://localhost:5400/api/users/${userId}`,
+          `http://izinganekwane-folktales-backend.vercel.app/api/users/${userId}`,
           { withCredentials: true }
         )
         setUser(fullUserResponse.data)
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const register = async (name: string, email: string, password: string) => {
     try {
-      await axios.post('http://localhost:5400/api/users/sign-up', {
+      await axios.post('http://izinganekwane-folktales-backend.vercel.app/api/users/sign-up', {
         name,
         email,
         password,
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     try {
       const authResponse = await axios.post(
-        'http://localhost:5400/api/users/sign-in',
+        'http://izinganekwane-folktales-backend.vercel.app/api/users/sign-in',
         { email, password },
         { withCredentials: true }
       )
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Fetch the full user details after login
       const fullUserResponse = await axios.get(
-        `http://localhost:5400/api/users/${userId}`,
+        `http://izinganekwane-folktales-backend.vercel.app/api/users/${userId}`,
         { withCredentials: true }
       )
       setUser(fullUserResponse.data)
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.get('http://localhost:5400/api/users/sign-out', {
+      await axios.get('http://izinganekwane-folktales-backend.vercel.app/api/users/sign-out', {
         withCredentials: true,
       })
       setUser(null)
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateUser = async (userId: string, name: string, email: string) => {
     try {
       const response = await axios.put(
-        `http://localhost:5400/api/users/${userId}`,
+        `http://izinganekwane-folktales-backend.vercel.app/api/users/${userId}`,
         { name, email },
         { withCredentials: true }
       )
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteUser = async (userId: string) => {
     try {
-      await axios.delete(`http://localhost:5400/api/users/${userId}`, {
+      await axios.delete(`http://izinganekwane-folktales-backend.vercel.app/api/users/${userId}`, {
         withCredentials: true,
       })
       setUser(null)

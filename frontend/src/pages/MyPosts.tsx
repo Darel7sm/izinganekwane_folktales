@@ -25,7 +25,7 @@ const MyPosts = () => {
       if (user?._id) {
         try {
           const response = await axios.get(
-            'http://localhost:5400/api/posts/my-posts/',
+            'http://izinganekwane-folktales-backend.vercel.app/api/posts/my-posts/',
             { withCredentials: true }
           )
           // Filter the posts to ensure only posts created by the authenticated user are displayed
@@ -55,7 +55,7 @@ const MyPosts = () => {
   const handleConfirmDelete = async () => {
     if (deletePost) {
       try {
-        await axios.delete(`http://localhost:5400/api/posts/${deletePost}`, {
+        await axios.delete(`http://izinganekwane-folktales-backend.vercel.app/api/posts/${deletePost}`, {
           withCredentials: true,
         })
         setPosts(posts.filter((post) => post._id !== deletePost))

@@ -14,7 +14,7 @@ const EditPost = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5400/api/posts/${postId}`, 
+        const response = await axios.get(`http://izinganekwane-folktales-backend.vercel.app/api/posts/${postId}`, 
           { withCredentials: true })
         const post = response.data
         setTitle(post.title)
@@ -33,7 +33,7 @@ const EditPost = () => {
     e.preventDefault()
 
     try {
-      await axios.put(`http://localhost:5400/api/posts/${postId}`, { title, author, content }, { withCredentials: true })
+      await axios.put(`http://izinganekwane-folktales-backend.vercel.app/api/posts/${postId}`, { title, author, content }, { withCredentials: true })
       navigate(`/Post/${postId}`) 
     } catch (err) {
       console.error('Failed to update post', err)

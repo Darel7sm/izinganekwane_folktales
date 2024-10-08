@@ -14,9 +14,12 @@ const CreatePost = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get('http://localhost:5400/api/users/', {
-          withCredentials: true,
-        })
+        const response = await axios.get(
+          'http://izinganekwane-folktales-backend.vercel.app/api/users/',
+          {
+            withCredentials: true,
+          }
+        )
         if (response.status === 200) {
           setIsLoggedIn(true)
           setAuthor(response.data.user.name)
@@ -36,7 +39,7 @@ const CreatePost = () => {
 
     try {
       await axios.post(
-        'http://localhost:5400/api/posts/',
+        'http://izinganekwane-folktales-backend.vercel.app/api/posts/',
         { title, author, content },
         { withCredentials: true }
       )
