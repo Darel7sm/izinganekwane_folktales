@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(morgan('dev'))
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://izinganekwane-folktales.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   })
