@@ -22,13 +22,17 @@ app.use(express.json())
 app.use(morgan('dev'))
 app.use(
   cors({
-    origin: ['http://izinganekwane-folktales.vercel.app'],
+    origin: ['https://izinganekwane-folktales.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   })
 )
 app.use(cookieParser())
 app.use(bodyParser.json())
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello from Express on Vercel!')
+})
 
 // Routes
 app.use('/api/posts', postRoutes)
