@@ -30,9 +30,9 @@ app.use(
 app.use(cookieParser())
 app.use(bodyParser.json())
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello from Express on Vercel!')
-})
+app.get('/', (req, res) => {
+  res.send('Hello from Express on Vercel!');
+});
 
 // Routes
 app.use('/api/posts', postRoutes)
