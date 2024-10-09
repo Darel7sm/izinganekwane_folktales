@@ -17,7 +17,7 @@ const ResetPassword: React.FC = () => {
     }
     try {
       const response = await axios.post(
-        `http://localhost:5400/api/users/reset-password`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/users/reset-password`,
         {
           password,
           resetToken,

@@ -42,7 +42,7 @@ const Post: React.FC = () => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(
-          `http://izinganekwane-folktales-backend.vercel.app/api/posts/${postId}`
+          `https://izinganekwane-folktales-backend.vercel.app/api/posts/${postId}`
         )
         setPost(response.data)
         setLiked(response.data.likes.includes(user?._id))
@@ -64,7 +64,7 @@ const Post: React.FC = () => {
     try {
       console.log('Liking/Unliking post...')
       await axios.post(
-        `http://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/${postId}/like`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/${postId}/like`,
         {},
         {
           withCredentials: true,
@@ -82,7 +82,7 @@ const Post: React.FC = () => {
     try {
       console.log('Disliking post...')
       await axios.post(
-        `http://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/${postId}/dislike`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/${postId}/dislike`,
         {},
         {
           withCredentials: true,
@@ -100,7 +100,7 @@ const Post: React.FC = () => {
     try {
       console.log('Adding/removing favorite...')
       await axios.post(
-        `http://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/${postId}/favorite`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/${postId}/favorite`,
         {},
         {
           withCredentials: true,
@@ -120,7 +120,7 @@ const Post: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `http://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/comments`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/comments`,
         { content: newComment },
         { withCredentials: true }
       )
@@ -140,7 +140,7 @@ const Post: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `http://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/comment-replies/${commentId}`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/comment-replies/${commentId}`,
         { content: reply[commentId] },
         { withCredentials: true }
       )
@@ -162,7 +162,7 @@ const Post: React.FC = () => {
 
     try {
       await axios.delete(
-        `http://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/delete-comment/${commentId}`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/delete-comment/${commentId}`,
         { withCredentials: true }
       )
       setComments((prevComments) =>
@@ -181,7 +181,7 @@ const Post: React.FC = () => {
 
     try {
       await axios.delete(
-        `http://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/delete-reply/${commentId}/${replyId}`,
+        `https://izinganekwane-folktales-backend.vercel.app/api/posts/comment/${postId}/delete-reply/${commentId}/${replyId}`,
         { withCredentials: true }
       )
 

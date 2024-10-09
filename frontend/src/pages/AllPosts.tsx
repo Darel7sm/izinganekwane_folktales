@@ -11,7 +11,7 @@ const AllPosts = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
-          'http://izinganekwane-folktales-backend.vercel.app/api/posts/',
+          'https://izinganekwane-folktales-backend.vercel.app/api/posts/',
           {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },

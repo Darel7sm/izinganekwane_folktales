@@ -22,7 +22,7 @@ const Favorites = () => {
       try {
         // Fetch favorite posts for the authenticated user
         const response = await axios.get(
-          'http://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/favorites',
+          'https://izinganekwane-folktales-backend.vercel.app/api/posts/reaction/favorites',
           { withCredentials: true }
         )
         setPosts(response.data)

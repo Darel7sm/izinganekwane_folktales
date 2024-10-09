@@ -11,7 +11,7 @@ const ForgotPassword: React.FC = () => {
     e.preventDefault()
     try {
       const response = await fetch(
-        'http://izinganekwane-folktales-backend.vercel.app/api/users/forgot-password',
+        'https://izinganekwane-folktales-backend.vercel.app/api/users/forgot-password',
         {
           method: 'POST',
           headers: {

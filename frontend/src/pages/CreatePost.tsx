@@ -15,7 +15,7 @@ const CreatePost = () => {
     const checkLoginStatus = async () => {
       try {
         const response = await axios.get(
-          'http://izinganekwane-folktales-backend.vercel.app/api/users/',
+          'https://izinganekwane-folktales-backend.vercel.app/api/users/',
           {
             withCredentials: true,
           }
@@ -39,7 +39,7 @@ const CreatePost = () => {
 
     try {
       await axios.post(
-        'http://izinganekwane-folktales-backend.vercel.app/api/posts/',
+        'https://izinganekwane-folktales-backend.vercel.app/api/posts/',
         { title, author, content },
         { withCredentials: true }
       )
